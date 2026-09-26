@@ -44,12 +44,11 @@ function App() {
     <main className="mx-auto min-h-svh max-w-6xl bg-white p-6 text-slate-900 sm:p-8">
       <header className="mb-6 max-w-xl">
         <h1 className="text-3xl font-bold">
-          Heat<span className="text-rose-600">break</span>
+          Ex<span className="text-rose-600">cape</span>
         </h1>
         <p className="mt-1 text-slate-600">
-          Your photos remember where it hurts. Heatbreak maps those places,
-          routes your walk around them, and lets each one cool down in its own
-          time.
+          Your photos remember where it hurts. Excape maps those places, routes
+          your walk around them, and lets each one cool down in its own time.
         </p>
       </header>
 

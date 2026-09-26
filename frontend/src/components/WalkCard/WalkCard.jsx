@@ -83,7 +83,7 @@ export default function WalkCard({
           </span>
         </div>
         <div className="rounded-md bg-white px-3 py-2">
-          <span className="block text-xs text-slate-400">Heatbreak way</span>
+          <span className="block text-xs text-slate-400">Execape way</span>
           <b className="text-xl tabular-nums">{route.heatbreak.minutes} min</b>
           <span className="block text-xs">
             {(route.heatbreak.metres / 1000).toFixed(1)} km
