@@ -12,15 +12,24 @@ export async function readPhotos(files, onProgress = () => {}) {
       let lat = null;
       let lon = null;
       let takenAt = null;
+      let unreadable = false;
       try {
         const loc = await gps(f);
         if (loc) ({ latitude: lat, longitude: lon } = loc);
         const meta = await parse(f, ['DateTimeOriginal', 'CreateDate']);
         takenAt = meta?.DateTimeOriginal || meta?.CreateDate || null;
       } catch {
-        // unreadable file: counted, never placed
+        lat = null;
+        lon = null;
+        unreadable = true;
       }
-      out.push({ lat, lon, takenAt });
+      out.push({
+        lat,
+        lon,
+        takenAt:
+          takenAt instanceof Date && Number.isFinite(+takenAt) ? takenAt : null,
+        unreadable,
+      });
       onProgress(++done, files.length);
     }
   }

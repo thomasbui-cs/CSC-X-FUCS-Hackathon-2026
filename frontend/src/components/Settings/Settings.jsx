@@ -3,9 +3,19 @@ export default function Settings({ remember, onToggleRemember, onForget }) {
     <section className="grid gap-2 rounded-lg border border-slate-200 p-4">
       <h2 className="font-semibold">Settings</h2>
       <label className="flex items-center gap-2 text-sm">
-        <input type="checkbox" checked={remember} onChange={onToggleRemember} className="accent-sky-500" />
+        <input
+          type="checkbox"
+          checked={remember}
+          onChange={onToggleRemember}
+          className="accent-sky-500"
+        />
         Remember my map on this device
       </label>
+      <p className="text-xs text-slate-500">
+        When enabled, photo locations and dates, safe places, and your choices
+        are saved in this browser. Photo files are never saved. Turning this off
+        removes saved data.
+      </p>
       <button
         type="button"
         onClick={onForget}

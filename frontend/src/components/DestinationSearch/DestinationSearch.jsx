@@ -1,66 +1,128 @@
 import { useEffect, useRef, useState } from 'react';
 
-// Free, client-only reverse geocoding — no key, no server. Debounced, biased to Adelaide's
-// city centre bounding box for relevance. See build spec's "stretch" list, section 01.
-const ADELAIDE_VIEWBOX = '138.55,-34.90,138.65,-34.96';
+const API_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:3000';
 
-export default function DestinationSearch({ destination, onSelect }) {
-  const [query, setQuery] = useState(destination?.name ?? '');
+export default function DestinationSearch({
+  destination,
+  onSelect,
+  marking,
+  onMark,
+}) {
+  const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
-  const [open, setOpen] = useState(false);
-  const abortRef = useRef(null);
+  const [message, setMessage] = useState('');
+  const [loading, setLoading] = useState(false);
+  const request = useRef(null);
 
-  const tooShort = query.trim().length < 3 || query === destination?.name;
+  useEffect(() => () => request.current?.abort(), []);
 
-  useEffect(() => {
-    if (tooShort) return; // nothing to fetch — dropdown is hidden via `tooShort` below regardless
-    const handle = setTimeout(async () => {
-      abortRef.current?.abort();
-      const controller = new AbortController();
-      abortRef.current = controller;
-      try {
-        const url = `https://nominatim.openstreetmap.org/search?format=json&limit=5&viewbox=${ADELAIDE_VIEWBOX}&bounded=1&q=${encodeURIComponent(query)}`;
-        const res = await fetch(url, { signal: controller.signal });
-        const body = await res.json();
-        setResults(body.map((r) => ({ name: r.display_name, lat: +r.lat, lon: +r.lon })));
-        setOpen(true);
-      } catch {
-        // aborted or offline: leave results as-is
-      }
-    }, 400);
-    return () => clearTimeout(handle);
-  }, [query, tooShort]);
+  function reset() {
+    request.current?.abort();
+    request.current = null;
+    setLoading(false);
+    setResults([]);
+    setMessage('');
+  }
+
+  async function search(event) {
+    event.preventDefault();
+    reset();
+    const controller = new AbortController();
+    request.current = controller;
+    setLoading(true);
+    try {
+      const res = await fetch(
+        `${API_URL}/api/places?q=${encodeURIComponent(query.trim())}`,
+        { signal: controller.signal }
+      );
+      if (!res.ok)
+        throw new Error('Search unavailable. Retry or place a pin on the map.');
+      const places = await res.json();
+      if (request.current !== controller) return;
+      setResults(places);
+      setMessage(
+        places.length
+          ? 'Choose a destination below.'
+          : 'No places found. Try a street, suburb, or city.'
+      );
+    } catch (error) {
+      if (!controller.signal.aborted) setMessage(error.message);
+    } finally {
+      if (request.current === controller) setLoading(false);
+    }
+  }
 
   return (
-    <section className="relative grid gap-2 rounded-lg border border-slate-200 p-4">
-      <h2 className="font-semibold">Destination</h2>
-      <input
-        type="text"
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
-        onFocus={() => !tooShort && results.length && setOpen(true)}
-        placeholder="Search for where you're walking to…"
-        className="rounded-md border border-slate-300 px-2 py-1.5 text-sm text-slate-900"
-      />
-      {open && !tooShort && results.length > 0 && (
-        <ul className="absolute top-full left-0 z-10 mt-1 max-h-48 w-full overflow-auto rounded-md border border-slate-200 bg-white shadow-lg">
-          {results.map((r) => (
-            <li key={`${r.lat},${r.lon}`}>
-              <button
-                type="button"
-                onClick={() => {
-                  onSelect(r);
-                  setQuery(r.name);
-                  setOpen(false);
-                }}
-                className="block w-full px-3 py-2 text-left text-sm hover:bg-slate-50"
-              >
-                {r.name}
-              </button>
-            </li>
-          ))}
-        </ul>
+    <section
+      id="destination"
+      className="grid gap-3 rounded-lg border border-slate-200 p-4"
+    >
+      <h2 className="font-semibold">5. Where are you walking?</h2>
+      {destination && (
+        <div className="rounded-md bg-sky-50 p-2 text-sm">
+          <strong>Destination: </strong>
+          {destination.name}
+          <button
+            className="ml-2 underline"
+            onClick={() => {
+              reset();
+              onSelect(null);
+            }}
+          >
+            Clear
+          </button>
+        </div>
       )}
+      <form onSubmit={search} className="flex gap-2">
+        <input
+          aria-label="Search destination"
+          value={query}
+          onChange={(e) => {
+            reset();
+            setQuery(e.target.value);
+          }}
+          placeholder="Place, address, or city"
+          className="min-w-0 flex-1 rounded-md border border-slate-300 px-2 py-2 text-sm"
+        />
+        <button
+          disabled={loading || query.trim().length < 3}
+          className="rounded-md bg-slate-900 px-3 text-sm text-white disabled:opacity-40"
+        >
+          Search
+        </button>
+      </form>
+      <p role="status" className="text-sm text-slate-500">
+        {loading ? 'Searching…' : message}
+      </p>
+      <ul className="max-h-52 overflow-auto">
+        {results.map((place) => (
+          <li key={`${place.lat},${place.lon}`}>
+            <button
+              onClick={() => {
+                reset();
+                onSelect(place);
+              }}
+              className="w-full rounded-md p-2 text-left text-sm hover:bg-sky-50"
+            >
+              {place.name}
+            </button>
+          </li>
+        ))}
+      </ul>
+      <button
+        onClick={onMark}
+        className="rounded-md border border-slate-300 px-3 py-2 text-sm"
+      >
+        {marking ? 'Cancel destination pin' : 'Choose destination on map'}
+      </button>
+      <p className="text-xs text-slate-500">
+        Search uses{' '}
+        <a className="underline" href="https://www.openstreetmap.org/copyright">
+          OpenStreetMap
+        </a>
+        . Search terms are sent to the search service only when you press
+        Search.
+      </p>
     </section>
   );
 }

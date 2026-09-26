@@ -1,21 +1,31 @@
 // Which photos count, which places they form, and how warm each place is.
 // See the build spec section 06: heat falls in a straight line from break-up day
 // to zero at the end of the cooldown; cooldown grows with log2(photo count).
-import { metres } from './geo';
+import { metres } from './geo.js';
 
 const DAY = 86400000;
 
 export function filterPhotos(photos, { start, end, safe }) {
-  const withLoc = photos.filter((p) => p.lat != null && p.lon != null);
+  const withLoc = photos.filter(
+    (p) => Number.isFinite(p.lat) && Number.isFinite(p.lon)
+  );
   const inDates = withLoc.filter(
     (p) =>
-      (!start && !end) ||
-      (p.takenAt && (!start || p.takenAt >= start) && (!end || p.takenAt < new Date(+end + DAY))),
+      p.takenAt &&
+      (!start || p.takenAt >= start) &&
+      (!end || p.takenAt < new Date(+end + DAY))
   );
-  const kept = inDates.filter((p) => !safe.some((s) => metres(p, s) < s.radiusM));
+  const kept = inDates.filter(
+    (p) => !safe.some((s) => metres(p, s) < s.radiusM)
+  );
   return {
     kept,
-    funnel: { read: photos.length, withLocation: withLoc.length, inDates: inDates.length, kept: kept.length },
+    funnel: {
+      read: photos.length,
+      withLocation: withLoc.length,
+      inDates: inDates.length,
+      kept: kept.length,
+    },
   };
 }
 
@@ -42,7 +52,7 @@ export function clusterPhotos(photos, joinM = 60, minPhotos = 2) {
     }
   }
   // Greedy grouping can start a second place at the edge of a busy one: merge centres closer than joinM.
-  for (let merged = true; merged; ) {
+  for (let merged = true; merged;) {
     merged = false;
     outer: for (let i = 0; i < places.length; i++) {
       for (let j = i + 1; j < places.length; j++) {
@@ -67,6 +77,9 @@ export function clusterPhotos(photos, joinM = 60, minPhotos = 2) {
       const n = c.photos.length;
       const L2 = Math.log2(1 + n);
       return {
+        name:
+          c.photos.find((p) => p.name)?.name ??
+          `Place near ${c.lat.toFixed(4)}, ${c.lon.toFixed(4)}`,
         id: `${c.lat.toFixed(4)},${c.lon.toFixed(4)}`,
         lat: c.lat,
         lon: c.lon,
@@ -79,13 +92,16 @@ export function clusterPhotos(photos, joinM = 60, minPhotos = 2) {
     .sort((a, b) => b.n - a.n);
 }
 
-export const daysSince = (from, now) => Math.max(0, Math.floor((now - from) / DAY));
+export const daysSince = (from, now) =>
+  Math.max(0, Math.floor((now - from) / DAY));
 const cooldown = (spot, st) => spot.baseCooldownDays + (st?.extraDays || 0);
 
 // 0 = cold. Falls in a straight line from the spot's weight on break-up day to 0 at the end of its cooldown.
 export function heat(spot, st, now, breakUp) {
   if (st?.reclaimedOn || st?.readyOn) return 0;
-  return spot.weight * Math.max(0, 1 - daysSince(breakUp, now) / cooldown(spot, st));
+  return (
+    spot.weight * Math.max(0, 1 - daysSince(breakUp, now) / cooldown(spot, st))
+  );
 }
 
 export function status(spot, st, now, breakUp) {
@@ -95,7 +111,9 @@ export function status(spot, st, now, breakUp) {
 }
 
 export function daysLeft(spot, st, now, breakUp) {
-  return heat(spot, st, now, breakUp) > 0 ? Math.ceil(cooldown(spot, st) - daysSince(breakUp, now)) : 0;
+  return heat(spot, st, now, breakUp) > 0
+    ? Math.ceil(cooldown(spot, st) - daysSince(breakUp, now))
+    : 0;
 }
 
 // Attaches heat/status/daysLeft to each raw spot, ready for HeatbreakMap and PlaceSheet.

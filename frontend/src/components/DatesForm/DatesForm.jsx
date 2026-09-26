@@ -1,4 +1,12 @@
-const iso = (d) => (d ? new Date(d).toISOString().slice(0, 10) : '');
+const iso = (d) => {
+  if (!d) return '';
+  const date = new Date(d);
+  return [
+    date.getFullYear(),
+    String(date.getMonth() + 1).padStart(2, '0'),
+    String(date.getDate()).padStart(2, '0'),
+  ].join('-');
+};
 
 export default function DatesForm({ start, end, onChange }) {
   return (
@@ -10,7 +18,11 @@ export default function DatesForm({ start, end, onChange }) {
           <input
             type="date"
             value={iso(start)}
-            onChange={(e) => e.target.value && onChange(new Date(`${e.target.value}T00:00:00`), end)}
+            max={iso(end)}
+            onChange={(e) =>
+              e.target.value &&
+              onChange(new Date(`${e.target.value}T00:00:00`), end)
+            }
             className="rounded-md border border-slate-300 px-2 py-1.5 text-slate-900"
           />
         </label>
@@ -19,13 +31,18 @@ export default function DatesForm({ start, end, onChange }) {
           <input
             type="date"
             value={iso(end)}
-            onChange={(e) => e.target.value && onChange(start, new Date(`${e.target.value}T00:00:00`))}
+            min={iso(start)}
+            onChange={(e) =>
+              e.target.value &&
+              onChange(start, new Date(`${e.target.value}T00:00:00`))
+            }
             className="rounded-md border border-slate-300 px-2 py-1.5 text-slate-900"
           />
         </label>
       </div>
       <p className="text-xs text-slate-400">
-        Only photos from these dates count. Everything before or after is left alone.
+        Only photos from these dates count. Everything before or after is left
+        alone.
       </p>
     </section>
   );

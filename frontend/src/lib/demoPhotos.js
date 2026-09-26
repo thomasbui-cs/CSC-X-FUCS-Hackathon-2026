@@ -39,8 +39,9 @@ export function demoPhotos() {
   for (const place of PLACES) {
     for (let i = 0; i < place.n; i++) {
       out.push({
-        lat: place.lat + gauss() * 0.0002, // roughly ±20m
-        lon: place.lon + gauss() * 0.0002,
+        name: place.name,
+        lat: place.lat + Math.max(-1.5, Math.min(1.5, gauss())) * 0.0002, // roughly ±20m
+        lon: place.lon + Math.max(-1.5, Math.min(1.5, gauss())) * 0.0002,
         takenAt: new Date(start.getTime() + rand() * span),
       });
     }
@@ -48,5 +49,14 @@ export function demoPhotos() {
   return out;
 }
 
-export const DEMO_HOME = { name: 'Home', lat: -34.9334, lon: 138.6092, radiusM: 90 };
-export const DEMO_DESTINATION = { name: 'Adelaide University', lat: -34.9208, lon: 138.6059 };
+export const DEMO_HOME = {
+  name: 'Home',
+  lat: -34.9334,
+  lon: 138.6092,
+  radiusM: 90,
+};
+export const DEMO_DESTINATION = {
+  name: 'Adelaide University',
+  lat: -34.9208,
+  lon: 138.6059,
+};

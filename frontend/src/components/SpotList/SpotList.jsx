@@ -2,9 +2,16 @@ import { STATUS_COLOURS } from '../Map/mapConstants';
 
 export default function SpotList({ spots, selectedId, onSelect }) {
   return (
-    <section className="grid gap-2 rounded-lg border border-slate-200 p-4">
+    <section
+      id="hotspots"
+      className="grid gap-2 rounded-lg border border-slate-200 p-4"
+    >
       <h2 className="font-semibold">4. Hot spots</h2>
-      {spots.length === 0 && <p className="text-sm text-slate-400">No places with two or more photos yet.</p>}
+      {spots.length === 0 && (
+        <p className="text-sm text-slate-400">
+          No places with two or more photos yet.
+        </p>
+      )}
       <ul className="grid gap-1">
         {spots.map((spot) => (
           <li key={spot.id}>

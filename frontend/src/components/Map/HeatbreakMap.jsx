@@ -1,8 +1,37 @@
-import { MapContainer, TileLayer, CircleMarker, Circle, Polyline, Tooltip } from 'react-leaflet';
+import { useEffect } from 'react';
+import {
+  useMap,
+  MapContainer,
+  TileLayer,
+  CircleMarker,
+  Circle,
+  Polyline,
+  Tooltip,
+} from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import HeatLayer from './HeatLayer';
 import MapClickHandler from './MapClickHandler';
 import { DEFAULT_CENTER, DEFAULT_ZOOM, STATUS_COLOURS } from './mapConstants';
+
+function MapView({ spots, safePlaces, destination, route, selectedSpot }) {
+  const map = useMap();
+  const points =
+    route?.heatbreak?.line ??
+    [...spots, ...safePlaces, ...(destination ? [destination] : [])].map(
+      (p) => [p.lat, p.lon]
+    );
+  const boundsKey = JSON.stringify(points);
+  useEffect(() => {
+    const bounds = JSON.parse(boundsKey);
+    if (bounds.length)
+      map.fitBounds(bounds, { padding: [35, 35], maxZoom: 16 });
+    else map.setView(DEFAULT_CENTER, DEFAULT_ZOOM);
+  }, [map, boundsKey]);
+  useEffect(() => {
+    if (selectedSpot) map.panTo([selectedSpot.lat, selectedSpot.lon]);
+  }, [map, selectedSpot]);
+  return null;
+}
 
 /**
  * @param {object[]} spots - [{ id, lat, lon, name?, n, heat, status }], status one of
@@ -15,6 +44,8 @@ import { DEFAULT_CENTER, DEFAULT_ZOOM, STATUS_COLOURS } from './mapConstants';
  * @param {(lat: number, lon: number) => void} onMapClick
  */
 export default function HeatbreakMap({
+  destination = null,
+  selectedSpot = null,
   spots = [],
   safePlaces = [],
   route = null,
@@ -23,9 +54,11 @@ export default function HeatbreakMap({
   onMapClick,
   center = DEFAULT_CENTER,
   zoom = DEFAULT_ZOOM,
-  className = 'h-[70vh] w-full',
+  className = 'h-[48vh] min-h-72 w-full lg:h-[70vh]',
 }) {
-  const heatPoints = spots.filter((s) => s.heat > 0).map((s) => [s.lat, s.lon, s.heat]);
+  const heatPoints = spots
+    .filter((s) => s.heat > 0)
+    .map((s) => [s.lat, s.lon, s.heat]);
   const sameRoute = route && route.heatbreak === route.usual;
 
   return (
@@ -41,6 +74,27 @@ export default function HeatbreakMap({
         maxZoom={19}
       />
 
+      <MapView
+        spots={spots}
+        safePlaces={safePlaces}
+        destination={destination}
+        route={route}
+        selectedSpot={selectedSpot}
+      />
+      {destination && (
+        <CircleMarker
+          center={[destination.lat, destination.lon]}
+          radius={9}
+          pathOptions={{
+            color: '#075985',
+            fillColor: '#fff',
+            fillOpacity: 1,
+            weight: 4,
+          }}
+        >
+          <Tooltip permanent>Destination</Tooltip>
+        </CircleMarker>
+      )}
       {marking && <MapClickHandler onClick={onMapClick} />}
       <HeatLayer points={heatPoints} />
 
@@ -49,7 +103,12 @@ export default function HeatbreakMap({
           key={s.name}
           center={[s.lat, s.lon]}
           radius={s.radiusM}
-          pathOptions={{ color: '#2F7FCF', weight: 2, dashArray: '6 6', fillOpacity: 0.05 }}
+          pathOptions={{
+            color: '#2F7FCF',
+            weight: 2,
+            dashArray: '6 6',
+            fillOpacity: 0.05,
+          }}
         >
           <Tooltip>{s.name}</Tooltip>
         </Circle>
@@ -62,7 +121,10 @@ export default function HeatbreakMap({
         />
       )}
       {route?.heatbreak && !sameRoute && (
-        <Polyline positions={route.heatbreak.line} pathOptions={{ color: '#2F7FCF', weight: 6 }} />
+        <Polyline
+          positions={route.heatbreak.line}
+          pathOptions={{ color: '#2F7FCF', weight: 6 }}
+        />
       )}
 
       {spots.map((spot) => (
