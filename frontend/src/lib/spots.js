@@ -84,7 +84,7 @@ const cooldown = (spot, st) => spot.baseCooldownDays + (st?.extraDays || 0);
 
 // 0 = cold. Falls in a straight line from the spot's weight on break-up day to 0 at the end of its cooldown.
 export function heat(spot, st, now, breakUp) {
-  if (st?.reclaimedOn || (st?.readyOn && now >= new Date(st.readyOn))) return 0;
+  if (st?.reclaimedOn || st?.readyOn) return 0;
   return spot.weight * Math.max(0, 1 - daysSince(breakUp, now) / cooldown(spot, st));
 }
 

@@ -44,7 +44,14 @@ export function useHeatbreak() {
   );
   const rawSpots = useMemo(() => clusterPhotos(kept), [kept]);
   const spots = useMemo(
-    () => withLiveState(rawSpots, settings.states, now, breakUp),
+    // Spots marked "I'm ready" are gone for good — off the map, the list and the stats.
+    () =>
+      withLiveState(
+        rawSpots.filter((s) => !settings.states[s.id]?.readyOn),
+        settings.states,
+        now,
+        breakUp,
+      ),
     [rawSpots, settings.states, now, breakUp],
   );
   const stillWarm = spots.filter((s) => s.heat > 0).length;
@@ -148,6 +155,7 @@ export function useHeatbreak() {
       if (action === 'unreclaim') next = { ...prev, reclaimedOn: undefined };
       return { ...s, states: { ...s.states, [spotId]: next } };
     });
+    if (action === 'ready') setSelectedId(null); // the spot is removed, so close its sheet
   }, []);
 
   const toggleRemember = useCallback(() => {
