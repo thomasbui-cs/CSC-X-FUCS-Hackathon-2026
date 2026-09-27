@@ -39,7 +39,7 @@ export default function PlaceSheet({ spot, onAction, onClose }) {
                 onClick={() => onAction('ready')}
                 className="rounded-md border border-slate-300 px-3 py-1.5 text-sm font-medium hover:border-slate-400"
               >
-                I’m ready
+                I’ve moved on
               </button>
               <button
                 type="button"
