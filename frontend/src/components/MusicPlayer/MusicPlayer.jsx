@@ -34,6 +34,7 @@ const MusicPlayer = () => {
 
   return (
     <div>
+      <img src={logo} style={{ height: '33px' }} />
       <div className="text-xl">How are you feeling today?</div>
       <div className="flex gap-4">
         <button

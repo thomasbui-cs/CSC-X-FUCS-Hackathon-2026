@@ -54,7 +54,6 @@ function App() {
             time.
           </p>
         </header>
-        <MusicPlayer />
       </div>
 
       <nav
@@ -131,6 +130,8 @@ function App() {
         </section>
 
         <aside className="grid gap-4">
+          <MusicPlayer />
+
           <PhotoPicker
             onFiles={actions.handleFiles}
             onUseSample={actions.loadSamplePhotos}
