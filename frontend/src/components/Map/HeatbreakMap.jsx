@@ -1,4 +1,5 @@
-import { useEffect } from 'react';
+import { useEffect, Fragment } from 'react';
+import { Marker } from 'react-leaflet';
 import {
   useMap,
   MapContainer,
@@ -9,9 +10,17 @@ import {
   Tooltip,
 } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
+import L from 'leaflet';
 import HeatLayer from './HeatLayer';
 import MapClickHandler from './MapClickHandler';
 import { DEFAULT_CENTER, DEFAULT_ZOOM, STATUS_COLOURS } from './mapConstants';
+
+const startingIcon = L.divIcon({
+  className: 'starting-pin-wrapper',
+  html: '<span class="starting-pin"><span></span></span>',
+  iconSize: [32, 44],
+  iconAnchor: [16, 44],
+});
 
 function MapView({ spots, safePlaces, destination, route, selectedSpot }) {
   const map = useMap();
@@ -98,20 +107,27 @@ export default function HeatbreakMap({
       {marking && <MapClickHandler onClick={onMapClick} />}
       <HeatLayer points={heatPoints} />
 
-      {safePlaces.map((s) => (
-        <Circle
-          key={s.name}
-          center={[s.lat, s.lon]}
-          radius={s.radiusM}
-          pathOptions={{
-            color: '#2F7FCF',
-            weight: 2,
-            dashArray: '6 6',
-            fillOpacity: 0.05,
-          }}
-        >
-          <Tooltip>{s.name}</Tooltip>
-        </Circle>
+      {safePlaces.map((place, index) => (
+        <Fragment key={place.name}>
+          {index === 0 && (
+            <Marker position={[place.lat, place.lon]} icon={startingIcon}>
+              <Tooltip permanent>Starting point</Tooltip>
+            </Marker>
+          )}
+
+          <Circle
+            center={[place.lat, place.lon]}
+            radius={place.radiusM}
+            pathOptions={{
+              color: '#2F7FCF',
+              weight: 2,
+              dashArray: '6 6',
+              fillOpacity: 0.05,
+            }}
+          >
+            <Tooltip>{place.name}</Tooltip>
+          </Circle>
+        </Fragment>
       ))}
 
       {route?.usual && (
