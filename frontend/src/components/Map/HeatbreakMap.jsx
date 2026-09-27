@@ -22,6 +22,17 @@ const startingIcon = L.divIcon({
   iconAnchor: [16, 44],
 });
 
+// Shows the photo count directly on the pin, coloured by cooldown status.
+const spotIcon = (spot) =>
+  L.divIcon({
+    className: 'spot-pin-wrapper',
+    html: `<span class="spot-pin" style="background:${
+      STATUS_COLOURS[spot.status] ?? STATUS_COLOURS.cooled
+    }">${spot.n}</span>`,
+    iconSize: [28, 28],
+    iconAnchor: [14, 14],
+  });
+
 function MapView({
   spots,
   safePlaces,
@@ -155,22 +166,16 @@ export default function HeatbreakMap({
       )}
 
       {spots.map((spot) => (
-        <CircleMarker
+        <Marker
           key={spot.id}
-          center={[spot.lat, spot.lon]}
-          radius={11}
-          pathOptions={{
-            color: '#fff',
-            weight: 2,
-            fillColor: STATUS_COLOURS[spot.status] ?? STATUS_COLOURS.cooled,
-            fillOpacity: 1,
-          }}
+          position={[spot.lat, spot.lon]}
+          icon={spotIcon(spot)}
           eventHandlers={{ click: () => onSelectSpot?.(spot) }}
         >
           <Tooltip>
             {(spot.name ?? 'A place') + ` · ${spot.n} photos · ${spot.status}`}
           </Tooltip>
-        </CircleMarker>
+        </Marker>
       ))}
     </MapContainer>
   );
