@@ -15,6 +15,13 @@ import HeatLayer from './HeatLayer';
 import MapClickHandler from './MapClickHandler';
 import { DEFAULT_CENTER, DEFAULT_ZOOM, STATUS_COLOURS } from './mapConstants';
 
+const startingIcon = L.divIcon({
+  className: 'starting-pin-wrapper',
+  html: '<span class="starting-pin"><span></span></span>',
+  iconSize: [32, 44],
+  iconAnchor: [16, 44],
+});
+
 function MapView({
   spots,
   safePlaces,
