@@ -153,8 +153,9 @@ export function useHeatbreak() {
       start,
       end,
       breakUp: end,
-      safe: [DEMO_HOME],
-      destination: DEMO_DESTINATION,
+      safe: s.safe.length ? s.safe : [DEMO_HOME],
+      destination: s.destination ?? DEMO_DESTINATION,
+      departure: s.departure ?? DEMO_HOME,
       states: {},
     }));
     setSelectedId(null);
