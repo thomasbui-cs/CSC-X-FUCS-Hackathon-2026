@@ -1,6 +1,10 @@
 @import 'tailwindcss';
 
-<<<<<<< HEAD
+@theme {
+  /* Creates the utility class: font-cambria */
+  --font-cambria: 'Cambria', 'Georgia', serif;
+}
+
 .title {
 	font-family: 'Bricolage Grotesque', sans-serif;
 	font-weight: 800;
@@ -15,9 +19,4 @@
 
 .title-rest {
 	color: #000;
-=======
-@theme {
-  /* Creates the utility class: font-cambria */
-  --font-cambria: 'Cambria', 'Georgia', serif;
->>>>>>> 0363b99ecc1328866ebe9b5b6f0870a3482522bf
 }
