@@ -18,12 +18,14 @@ const MusicPlayer = () => {
         audioObj.pause();
         const newAudio = new Audio(url);
         setAudioObj(newAudio);
+        newAudio.loop = true;
         newAudio.play();
         setCurrentUrl(url);
       }
     } else {
       const newAudio = new Audio(url);
       setAudioObj(newAudio);
+      newAudio.loop = true;
       newAudio.play();
       setIsPlaying(true);
       setCurrentUrl(url);
