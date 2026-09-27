@@ -1,1 +1,17 @@
 @import 'tailwindcss';
+
+.title {
+	font-family: 'Bricolage Grotesque', sans-serif;
+	font-weight: 800;
+	letter-spacing: -0.035em;
+}
+
+.title-gradient {
+	background: linear-gradient(135deg, #ff5a6e 0%, #e8364f 50%, #f08a2c 100%);
+	background-clip: text;
+	color: transparent;
+}
+
+.title-rest {
+	color: #000;
+}

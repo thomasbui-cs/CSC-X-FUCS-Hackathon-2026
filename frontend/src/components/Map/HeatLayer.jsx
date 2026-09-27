@@ -24,7 +24,8 @@ export default function HeatLayer({ points }) {
       // removal, so a pending frame fires after `remove()` nulls `_map` and throws on `.getSize()`.
       // Only reproduces under React StrictMode's dev-only double-invoke of effects — harmless in
       // production, but cancel it ourselves so dev console stays clean.
-      if (layerRef.current?._frame) L.Util.cancelAnimFrame(layerRef.current._frame);
+      if (layerRef.current?._frame)
+        L.Util.cancelAnimFrame(layerRef.current._frame);
       layerRef.current?.remove();
       layerRef.current = null;
     };
