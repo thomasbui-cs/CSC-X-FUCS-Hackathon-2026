@@ -57,7 +57,7 @@ function App() {
         </header>
       </div>
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-start mb-5">
-        <div>
+        <div className="min-w-0">
           <DestinationSearch
             key={resetKey}
             departure={settings.departure}
@@ -88,7 +88,7 @@ function App() {
                 : 'Plan route'}
           </button>
         </div>
-        <div>
+        <div className="min-w-0">
           <WalkCard
             route={route}
             routeLoading={routeLoading}
