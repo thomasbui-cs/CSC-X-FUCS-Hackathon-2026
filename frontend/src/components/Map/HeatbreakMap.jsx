@@ -15,20 +15,23 @@ import HeatLayer from './HeatLayer';
 import MapClickHandler from './MapClickHandler';
 import { DEFAULT_CENTER, DEFAULT_ZOOM, STATUS_COLOURS } from './mapConstants';
 
-const startingIcon = L.divIcon({
-  className: 'starting-pin-wrapper',
-  html: '<span class="starting-pin"><span></span></span>',
-  iconSize: [32, 44],
-  iconAnchor: [16, 44],
-});
-
-function MapView({ spots, safePlaces, destination, route, selectedSpot }) {
+function MapView({
+  spots,
+  safePlaces,
+  destination,
+  departure,
+  route,
+  selectedSpot,
+}) {
   const map = useMap();
   const points =
     route?.heatbreak?.line ??
-    [...spots, ...safePlaces, ...(destination ? [destination] : [])].map(
-      (p) => [p.lat, p.lon]
-    );
+    [
+      ...spots,
+      ...safePlaces,
+      ...(destination ? [destination] : []),
+      ...(departure ? [departure] : []),
+    ].map((p) => [p.lat, p.lon]);
   const boundsKey = JSON.stringify(points);
   useEffect(() => {
     const bounds = JSON.parse(boundsKey);
@@ -54,6 +57,7 @@ function MapView({ spots, safePlaces, destination, route, selectedSpot }) {
  */
 export default function HeatbreakMap({
   destination = null,
+  departure = null,
   selectedSpot = null,
   spots = [],
   safePlaces = [],
@@ -87,6 +91,7 @@ export default function HeatbreakMap({
         spots={spots}
         safePlaces={safePlaces}
         destination={destination}
+        departure={departure}
         route={route}
         selectedSpot={selectedSpot}
       />
@@ -102,6 +107,20 @@ export default function HeatbreakMap({
           }}
         >
           <Tooltip permanent>Destination</Tooltip>
+        </CircleMarker>
+      )}
+      {departure && (
+        <CircleMarker
+          center={[departure.lat, departure.lon]}
+          radius={9}
+          pathOptions={{
+            color: '#075985',
+            fillColor: '#fff',
+            fillOpacity: 1,
+            weight: 4,
+          }}
+        >
+          <Tooltip permanent>departure</Tooltip>
         </CircleMarker>
       )}
       {marking && <MapClickHandler onClick={onMapClick} />}

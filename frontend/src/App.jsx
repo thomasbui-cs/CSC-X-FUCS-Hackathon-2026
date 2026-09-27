@@ -61,7 +61,8 @@ function App() {
           <DestinationSearch
             key={resetKey}
             destination={settings.destination}
-            onSelect={actions.setDestination}
+            onSelectDestination={actions.setDestination}
+            onSelectDeparture={actions.setDeparture}
             marking={marking === 'destination'}
             onMark={() => toggleMarking('destination')}
           />
@@ -72,7 +73,8 @@ function App() {
               uploading ||
               routeLoading ||
               !settings.safe.length ||
-              !settings.destination
+              !settings.destination ||
+              !settings.departure
             }
             className="rounded-lg bg-sky-700 px-4 py-3 font-semibold text-white disabled:opacity-40 mt-5 w-full"
           >
@@ -116,6 +118,7 @@ function App() {
             route={route}
             marking={Boolean(marking)}
             destination={settings.destination}
+            departure={settings.departure}
             selectedSpot={selectedSpot}
             onMapClick={(lat, lon) => {
               if (marking === 'destination') {

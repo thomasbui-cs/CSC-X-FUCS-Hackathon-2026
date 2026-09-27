@@ -86,10 +86,14 @@ export function useHeatbreak() {
 
   const home = settings.safe[0] ?? null;
   const canRoute = Boolean(
-    home && settings.destination && planVersion && !uploading
+    home &&
+    settings.destination &&
+    planVersion &&
+    !uploading &&
+    settings.departure
   );
   const routeKey = JSON.stringify([
-    home,
+    settings.departure,
     settings.destination,
     spots,
     planVersion,
@@ -104,7 +108,7 @@ export function useHeatbreak() {
     setRouteError(null);
     const timer = setTimeout(() => {
       routeAround(
-        home,
+        settings.departure,
         settings.destination,
         rawSpots,
         settings.states,
@@ -206,6 +210,9 @@ export function useHeatbreak() {
   const setDestination = useCallback((destination) => {
     setSettings((s) => ({ ...s, destination }));
   }, []);
+  const setDeparture = useCallback((departure) => {
+    setSettings((s) => ({ ...s, departure }));
+  }, []);
 
   const applySpotAction = useCallback((spotId, action) => {
     const today = new Date().toISOString().slice(0, 10);
@@ -269,6 +276,7 @@ export function useHeatbreak() {
       addSafePlace,
       removeSafePlace,
       setDestination,
+      setDeparture,
       selectSpot: setSelectedId,
       applySpotAction,
       setPreviewDays,

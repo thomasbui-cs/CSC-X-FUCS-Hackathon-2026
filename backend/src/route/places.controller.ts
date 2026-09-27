@@ -5,19 +5,16 @@ import {
   Get,
   Query,
 } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 
 type Place = { name: string; lat: number; lon: number };
 
-// One process-wide queue enforces the public service's application-wide limit.
-// Deploy a single instance or configure GEOCODER_URL for a dedicated provider.
+const GEOCODER_URL = 'https://nominatim.openstreetmap.org/search';
+
 @Controller('api/places')
 export class PlacesController {
   private readonly cache = new Map<string, Place[]>();
   private queue: Promise<unknown> = Promise.resolve();
   private lastRequest = 0;
-
-  constructor(private readonly config: ConfigService) {}
 
   @Get()
   search(@Query('q') query: string): Promise<Place[]> {
@@ -39,10 +36,7 @@ export class PlacesController {
         ),
       );
       this.lastRequest = Date.now();
-      const url = new URL(
-        this.config.get<string>('GEOCODER_URL') ??
-          'https://nominatim.openstreetmap.org/search',
-      );
+      const url = new URL(GEOCODER_URL);
       url.searchParams.set('q', q);
       url.searchParams.set('format', 'json');
       url.searchParams.set('limit', '5');
