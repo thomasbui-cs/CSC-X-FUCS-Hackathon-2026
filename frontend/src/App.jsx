@@ -11,6 +11,7 @@ import Stats from './components/Stats/Stats';
 import PreviewSlider from './components/PreviewSlider/PreviewSlider';
 import Settings from './components/Settings/Settings';
 import { useHeatbreak } from './hooks/useHeatbreak';
+import MusicPlayer from './components/MusicPlayer/MusicPlayer';
 
 function App() {
   const {
@@ -42,15 +43,19 @@ function App() {
 
   return (
     <main className="mx-auto min-h-svh max-w-6xl bg-white p-6 text-slate-900 sm:p-8">
-      <header className="mb-6 max-w-xl">
-        <h1 className="text-3xl font-bold">
-          Ex<span className="text-rose-600">cape</span>
-        </h1>
-        <p className="mt-1 text-slate-600">
-          Your photos remember where it hurts. Excape maps those places, routes
-          your walk around them, and lets each one cool down in its own time.
-        </p>
-      </header>
+      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-start">
+        <header className="mb-6 max-w-xl">
+          <h1 className="text-3xl font-bold">
+            Ex<span className="text-rose-600">cape</span>
+          </h1>
+          <p className="mt-1 text-slate-600">
+            Your photos remember where it hurts. Excape maps those places,
+            routes your walk around them, and lets each one cool down in its own
+            time.
+          </p>
+        </header>
+        <MusicPlayer />
+      </div>
 
       <nav
         aria-label="Your progress"
