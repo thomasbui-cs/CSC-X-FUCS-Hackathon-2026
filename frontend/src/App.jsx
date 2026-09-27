@@ -45,8 +45,9 @@ function App() {
     <main className="mx-auto min-h-svh max-w-6xl bg-white p-6 text-slate-900 sm:p-8">
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-start">
         <header className="mb-6 max-w-3x1">
-          <h1 className="font-cambria text-6xl font-bold">
-            <span className="text-rose-600">EX</span>cape
+          <h1 className="title text-6xl">
+            <span className="title-gradient">EX</span>
+            <span className="title-rest">cape</span>
           </h1>
           <p className="mt-1 text-slate-600">
             Your photos remember where it hurts. Excape maps those places,
@@ -55,26 +56,49 @@ function App() {
           </p>
         </header>
       </div>
-
-      <nav
-        aria-label="Your progress"
-        className="mb-5 flex flex-wrap gap-2 text-sm"
-      >
-        {[
-          '1. Import photos',
-          '2. Review hotspots',
-          '3. Choose destination',
-          '4. Plan your walk',
-        ].map((label, i) => (
-          <a
-            href={`#${['photos', 'hotspots', 'destination', 'route'][i]}`}
-            key={label}
-            className={`rounded-full px-3 py-2 ${[funnel.read > 0, spots.length > 0, Boolean(settings.destination), Boolean(route)][i] ? 'bg-sky-100 text-sky-900' : 'bg-slate-100 text-slate-600'}`}
+      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-start mb-5">
+        <div>
+          <DestinationSearch
+            key={resetKey}
+            destination={settings.destination}
+            onSelect={actions.setDestination}
+            marking={marking === 'destination'}
+            onMark={() => toggleMarking('destination')}
+          />
+          <button
+            id="route"
+            onClick={actions.planRoute}
+            disabled={
+              uploading ||
+              routeLoading ||
+              !settings.safe.length ||
+              !settings.destination
+            }
+            className="rounded-lg bg-sky-700 px-4 py-3 font-semibold text-white disabled:opacity-40 mt-5 w-full"
           >
-            {label}
-          </a>
-        ))}
-      </nav>
+            {routeLoading
+              ? 'Planning…'
+              : routeError
+                ? 'Retry route'
+                : 'Plan route'}
+          </button>
+        </div>
+        <div>
+          <WalkCard
+            route={route}
+            routeLoading={routeLoading}
+            routeError={routeError}
+            stillWarm={stillWarm}
+            destinationName={settings.destination?.name ?? 'your destination'}
+          />
+          <p className="text-xs text-slate-500">
+            Walking routes only. Dashed: usual walk. Blue: avoidance route.
+            {/* Photos stay on this device; route endpoints and avoidance areas are
+            sent through our server to the routing service. */}
+          </p>
+        </div>
+      </div>
+
       {marking && (
         <p role="status" className="mb-3 rounded-lg bg-sky-100 p-3">
           Tap the map to place{' '}
@@ -159,42 +183,7 @@ function App() {
             {funnel.inDates} dated in range · {funnel.kept} outside safe places.
             Hotspots need at least two nearby photos.
           </p>
-          <DestinationSearch
-            key={resetKey}
-            destination={settings.destination}
-            onSelect={actions.setDestination}
-            marking={marking === 'destination'}
-            onMark={() => toggleMarking('destination')}
-          />
-          <button
-            id="route"
-            onClick={actions.planRoute}
-            disabled={
-              uploading ||
-              routeLoading ||
-              !settings.safe.length ||
-              !settings.destination
-            }
-            className="rounded-lg bg-sky-700 px-4 py-3 font-semibold text-white disabled:opacity-40"
-          >
-            {routeLoading
-              ? 'Planning…'
-              : routeError
-                ? 'Retry route'
-                : 'Plan route'}
-          </button>
-          <WalkCard
-            route={route}
-            routeLoading={routeLoading}
-            routeError={routeError}
-            stillWarm={stillWarm}
-            destinationName={settings.destination?.name ?? 'your destination'}
-          />
-          <p className="text-xs text-slate-500">
-            Walking routes only. Dashed: usual walk. Blue: avoidance route.
-            Photos stay on this device; route endpoints and avoidance areas are
-            sent through our server to the routing service.
-          </p>
+
           <Settings
             remember={settings.remember}
             onToggleRemember={actions.toggleRemember}
