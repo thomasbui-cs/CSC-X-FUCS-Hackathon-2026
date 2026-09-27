@@ -1,1 +1,6 @@
 @import 'tailwindcss';
+
+@theme {
+  /* Creates the utility class: font-cambria */
+  --font-cambria: 'Cambria', 'Georgia', serif;
+}
