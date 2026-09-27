@@ -80,15 +80,15 @@ function PlaceField({
     usePlaceSearch(onSelect);
 
   return (
-    <div className="grid gap-2">
+    <div className="grid min-w-0 gap-2">
       <label className="flex items-center gap-2 text-sm font-medium text-slate-700">
         <span className={`h-2.5 w-2.5 shrink-0 rounded-full ${dotClassName}`} />
         {label}
       </label>
 
       {value ? (
-        <div className="flex items-center justify-between gap-2 rounded-md bg-sky-50 px-3 py-2 text-sm">
-          <span className="truncate">{value.name}</span>
+        <div className="flex min-w-0 items-center justify-between gap-2 rounded-md bg-sky-50 px-3 py-2 text-sm">
+          <span className="min-w-0 truncate">{value.name}</span>
           <button
             type="button"
             className="shrink-0 text-slate-500 underline hover:text-slate-700"
@@ -170,7 +170,7 @@ export default function DestinationSearch({
   return (
     <section
       id="destination"
-      className="grid gap-4 rounded-lg border border-slate-200 p-4"
+      className="grid min-w-0 gap-4 rounded-lg border border-slate-200 p-4"
     >
       <h2 className="font-semibold">Where are you walking?</h2>
 
