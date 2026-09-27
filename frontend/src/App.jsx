@@ -46,7 +46,7 @@ function App() {
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-start">
         <header className="mb-6 max-w-3x1">
           <h1 className="font-cambria text-6xl font-bold">
-            <span className="text-rose-600">EX</span>cape Map
+            <span className="text-rose-600">EX</span>cape
           </h1>
           <p className="mt-1 text-slate-600">
             Your photos remember where it hurts. Excape maps those places,
