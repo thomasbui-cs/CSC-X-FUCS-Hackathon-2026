@@ -60,11 +60,14 @@ function App() {
         <div>
           <DestinationSearch
             key={resetKey}
+            departure={settings.departure}
             destination={settings.destination}
-            onSelectDestination={actions.setDestination}
             onSelectDeparture={actions.setDeparture}
-            marking={marking === 'destination'}
-            onMark={() => toggleMarking('destination')}
+            onSelectDestination={actions.setDestination}
+            markingDeparture={marking === 'departure'}
+            onMarkDeparture={() => toggleMarking('departure')}
+            markingDestination={marking === 'destination'}
+            onMarkDestination={() => toggleMarking('destination')}
           />
           <button
             id="route"
@@ -104,7 +107,14 @@ function App() {
       {marking && (
         <p role="status" className="mb-3 rounded-lg bg-sky-100 p-3">
           Tap the map to place{' '}
-          {marking === 'destination' ? 'your destination' : 'a safe place'}.{' '}
+          {
+            {
+              destination: 'your destination',
+              departure: 'your starting point',
+              safe: 'a safe place',
+            }[marking]
+          }
+          .{' '}
           <button className="underline" onClick={() => setMarking(null)}>
             Cancel
           </button>
@@ -123,6 +133,12 @@ function App() {
             onMapClick={(lat, lon) => {
               if (marking === 'destination') {
                 actions.setDestination({
+                  name: `Map pin (${lat.toFixed(4)}, ${lon.toFixed(4)})`,
+                  lat,
+                  lon,
+                });
+              } else if (marking === 'departure') {
+                actions.setDeparture({
                   name: `Map pin (${lat.toFixed(4)}, ${lon.toFixed(4)})`,
                   lat,
                   lon,
