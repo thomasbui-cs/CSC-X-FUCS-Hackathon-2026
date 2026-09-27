@@ -155,7 +155,11 @@ export default function HeatbreakMap({
       {route?.usual && (
         <Polyline
           positions={route.usual.line}
-          pathOptions={{ color: '#72697D', weight: 4, dashArray: '8 8' }}
+          pathOptions={
+            sameRoute
+              ? { color: '#2F7FCF', weight: 6 }
+              : { color: '#72697D', weight: 4, dashArray: '8 8' }
+          }
         />
       )}
       {route?.heatbreak && !sameRoute && (
