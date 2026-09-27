@@ -1,4 +1,10 @@
-import { ArrayMinSize, ArrayMaxSize, IsArray, IsNumber, IsOptional } from 'class-validator';
+import {
+  ArrayMinSize,
+  ArrayMaxSize,
+  IsArray,
+  IsNumber,
+  IsOptional,
+} from 'class-validator';
 
 export type LonLat = [number, number];
 
