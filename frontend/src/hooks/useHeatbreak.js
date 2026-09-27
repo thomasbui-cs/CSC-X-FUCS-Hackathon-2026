@@ -108,7 +108,7 @@ export function useHeatbreak() {
     setRouteError(null);
     const timer = setTimeout(() => {
       routeAround(
-        home,
+        settings.departure,
         settings.destination,
         rawSpots,
         settings.states,
