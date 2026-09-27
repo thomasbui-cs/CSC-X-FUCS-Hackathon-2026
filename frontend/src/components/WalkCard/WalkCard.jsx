@@ -42,7 +42,7 @@ export default function WalkCard({
   if (!route) {
     return (
       <section className="rounded-lg border border-slate-200 p-4 text-sm text-slate-400">
-        Mark home, choose a destination, then press Plan route.
+        Choose your photo before you can plan your route.{' '}
       </section>
     );
   }
@@ -83,7 +83,7 @@ export default function WalkCard({
           </span>
         </div>
         <div className="rounded-md bg-white px-3 py-2">
-          <span className="block text-xs text-slate-400">Execape way</span>
+          <span className="block text-xs text-slate-400">EXcape way</span>
           <b className="text-xl tabular-nums">{route.heatbreak.minutes} min</b>
           <span className="block text-xs">
             {(route.heatbreak.metres / 1000).toFixed(1)} km

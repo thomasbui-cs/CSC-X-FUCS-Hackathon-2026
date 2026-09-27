@@ -39,19 +39,19 @@ const MusicPlayer = () => {
       <div className="flex gap-4">
         <button
           onClick={() => play(greenMusic)}
-          className="flex-1 rounded-md border px-3 py-1.5 text-sm font-medium border-slate-300 bg-green-500 hover:border-slate-400 text-white cursor-pointer"
+          className="flex-1 rounded-md border px-3 py-1.5  font-medium border-slate-300 bg-green-500 hover:border-slate-400 text-white cursor-pointer"
         >
           Good!
         </button>
         <button
           onClick={() => play(yellowMusic)}
-          className="flex-1 rounded-md border px-3 py-1.5 text-sm font-medium border-slate-300 bg-yellow-500 hover:border-slate-400 text-white  cursor-pointer"
+          className="flex-1 rounded-md border px-3 py-1.5  border-slate-300 bg-yellow-500 hover:border-slate-400 text-white  cursor-pointer"
         >
           I'm ok
         </button>
         <button
           onClick={() => play(redMusic)}
-          className="flex-1 rounded-md border px-3 py-1.5 text-sm font-medium border-slate-300 bg-red-500 hover:border-slate-400 text-white cursor-pointer"
+          className="flex-1 rounded-md border px-3 py-1.5   border-slate-300 bg-red-500 hover:border-slate-400 text-white cursor-pointer"
         >
           Heartbroken!
         </button>

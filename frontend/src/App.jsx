@@ -50,9 +50,9 @@ function App() {
             <span className="title-rest">cape</span>
           </h1>
           <p className="mt-1 text-slate-600">
-            Your photos remember where it hurts. Excape maps those places,
-            routes your walk around them, and lets each one cool down in its own
-            time.
+            Your ex is gone. Unfortunately, that café is still there. EXcape
+            maps the memories and helps you route around them until they cool
+            down.
           </p>
         </header>
       </div>
