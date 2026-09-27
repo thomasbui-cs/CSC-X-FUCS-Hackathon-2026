@@ -50,7 +50,7 @@ export default function WalkCard({
   const same = route.heatbreak === route.usual;
   return (
     <section className="grid gap-2 rounded-lg border border-sky-200 bg-sky-50 p-4">
-      {route.heatbreak.provider === 'valhalla' && (
+      {/* {route.heatbreak.provider === 'valhalla' && (
         <p className="text-xs text-slate-500">
           Walking routes by{' '}
           <a className="underline" href="https://valhalla.openstreetmap.de/">
@@ -71,7 +71,7 @@ export default function WalkCard({
             Fix the map
           </a>
         </p>
-      )}
+      )} */}
       <h2 className="font-semibold">Today’s walk to {destinationName}</h2>
       <p className="text-sm text-slate-700">{voiceLine(route, stillWarm)}</p>
       <div className="grid grid-cols-2 gap-2">

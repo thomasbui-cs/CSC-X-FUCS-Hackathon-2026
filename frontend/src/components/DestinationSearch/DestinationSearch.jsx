@@ -57,7 +57,7 @@ export default function DestinationSearch({
       id="destination"
       className="grid gap-3 rounded-lg border border-slate-200 p-4"
     >
-      <h2 className="font-semibold">5. Where are you walking?</h2>
+      <h2 className="font-semibold"> Where are you walking?</h2>
       {destination && (
         <div className="rounded-md bg-sky-50 p-2 text-sm">
           <strong>Destination: </strong>
