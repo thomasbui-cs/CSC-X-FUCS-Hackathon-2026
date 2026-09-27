@@ -117,30 +117,15 @@ export default function HeatbreakMap({
         </CircleMarker>
       )}
       {departure && (
-        <CircleMarker
-          center={[departure.lat, departure.lon]}
-          radius={9}
-          pathOptions={{
-            color: '#075985',
-            fillColor: '#fff',
-            fillOpacity: 1,
-            weight: 4,
-          }}
-        >
-          <Tooltip permanent>departure</Tooltip>
-        </CircleMarker>
+        <Marker position={[departure.lat, departure.lon]} icon={startingIcon}>
+          <Tooltip permanent>Starting point</Tooltip>
+        </Marker>
       )}
       {marking && <MapClickHandler onClick={onMapClick} />}
       <HeatLayer points={heatPoints} />
 
-      {safePlaces.map((place, index) => (
+      {safePlaces.map((place) => (
         <Fragment key={place.name}>
-          {index === 0 && (
-            <Marker position={[place.lat, place.lon]} icon={startingIcon}>
-              <Tooltip permanent>Starting point</Tooltip>
-            </Marker>
-          )}
-
           <Circle
             center={[place.lat, place.lon]}
             radius={place.radiusM}
